@@ -11,7 +11,8 @@ async def on_ready():
 
 @client.command()
 async def say(ctx, *, message):
-    if ctx.message.raw_mentions != "<[]>":
+    if len(ctx.message.raw_mentions) != 0:
+        print(ctx.message.raw_mentions)
         await ctx.send("No Menciones 😠")
         return
     await ctx.send(message)
