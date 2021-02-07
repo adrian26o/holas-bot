@@ -3,6 +3,8 @@ from discord.ext import commands
 from youtube_search import YoutubeSearch
 import os
 import datetime
+import random
+import json
 client = commands.Bot(command_prefix=commands.when_mentioned_or("h!"), help_command=None, activity=discord.Game(name="h!help", start=datetime.datetime.utcfromtimestamp(1612588761)))
 token = os.environ.get('TOKEN')
 
@@ -24,6 +26,7 @@ async def ping(ctx):
 
 
 @client.command()
+@commands.guild_only()
 async def help(ctx):
     embed = discord.Embed(title="Comandos", colour=discord.Colour(0xf5a623), timestamp=datetime.datetime.utcfromtimestamp(1612588761))
 
@@ -40,33 +43,53 @@ async def help(ctx):
 
 
 @client.command()
+@commands.guild_only()
 async def say(ctx, *, mensaje = None):
-    embed = discord.Embed(colour=discord.Colour(0xf5a623),title="Error",description="Tienes que especificarme que decir tonta tonta 😠")
-
-    if mensaje == None:
-        await ctx.send(embed=embed)
-        return     
-
-    if ctx.message.mention_everyone == True or len(ctx.message.mentions) != 0:
-        if ctx.message.mention_everyone == True:
-            await ctx.send("No se permiten everyone ni here 😠.")
-            await ctx.message.delete()
-        else:
-            await ctx.send("No se permiten menciones 😠.")
-            await ctx.message.delete()
-            return
-        return
-
-    else:
-        await ctx.send(mensaje)
+    if len(ctx.message.mentions) != 0:
+        await ctx.send(f"{ctx.message.author.mention}, No puedes mencionar gente o roles en tu mensaje 😠")
         await ctx.message.delete()
-
-
+    mensaje = mensaje or (f"{ctx.message.author.mention}, Tienes que especificarme que decir tonta tonta 😠")
+    mensaje_components = mensaje.split()
+    if "@everyone" in mensaje_components or "@here" in mensaje_components:
+        await ctx.send(f"{ctx.message.author.mention}, No puedes poner everyone o here en tu mensaje 😠")
+        await ctx.message.delete()
+        return
+    await ctx.message.delete()
+    await ctx.send(mensaje)
 
 @client.command()
+@commands.guild_only()
 async def yt(ctx, *, search):
     results = YoutubeSearch(search, max_results=1).to_dict()
     await ctx.send(str(results[0]['title']) + "\nhttps://www.youtube.com" + str(results[0]['url_suffix']))
+
+def is_it_lepirus_guild(ctx):
+    return ctx.guild.id == 781631210262495292
+
+@client.command()
+@commands.check(is_it_lepirus_guild)
+async def schonkcreate(ctx):
+    choices = open('choices4.json', 'r')
+    choices1 = open('choices5.json', 'r')
+    choices2 = open('choices6.json', 'r')
+    a1 = json.load(choices)
+    a2 = json.load(choices1)
+    a3 = json.load(choices2)    
+    choose = random.choice(list(a1.values()))
+    choose1 = random.choice(list(a2.values()))
+    choose2 = random.choice(list(a3.values()))
+    await ctx.send(str(choose)+str(choose1)+str(choose2))
+    choices.close()
+    choices1.close()
+    choices2.close()
+
+
     
+
+
+
+
+
+
 
 client.run(token)
