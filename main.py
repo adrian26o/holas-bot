@@ -33,7 +33,7 @@ async def help(ctx):
 
     embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/796797535208341544/c6b3f004ea31246515f88524518984ff.png")
     embed.set_author(name=ctx.message.author.name, icon_url=ctx.message.author.avatar_url)
-    embed.set_footer(text="Prefix: " + str(client.command_prefix), icon_url="https://cdn.discordapp.com/embed/avatars/0.png")
+    embed.set_footer(text="Prefix: h!", icon_url="https://cdn.discordapp.com/embed/avatars/0.png")
     embed.add_field(name="```help```", value="Muestra este mensaje (duh).", inline=False)
     embed.add_field(name="```say```", value="`say [mensaje]`.\nHace que el bot responda con[mensaje].", inline=False)
     embed.add_field(name="```ping```", value="Muestra la latencia del bot con discord.", inline=False)
