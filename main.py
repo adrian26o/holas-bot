@@ -5,6 +5,7 @@ import os
 import datetime
 import random
 import json
+
 client = commands.Bot(command_prefix=commands.when_mentioned_or("h!"), help_command=None, activity=discord.Game(name="h!help", start=datetime.datetime.utcfromtimestamp(1612588761)))
 token = os.environ.get('TOKEN')
 @client.event
@@ -16,11 +17,13 @@ async def on_ready():
     print("Token: " + token)
 
 
+
 #Ping
 @client.command()
 async def ping(ctx):
     embed = discord.Embed(colour=discord.Colour(0xf5a623),description="La latencia del bot es: " + f"**{round(client.latency*1000)}**ms")
     await ctx.send(embed=embed)
+
 
 
 #Help
@@ -39,6 +42,7 @@ async def help(ctx):
     await ctx.send(content="Holas!, " + f"{ctx.message.author.mention} " + "aquí tienes tu ayuda", embed=embed)
 
 
+
 #Say
 @client.command()
 async def say(ctx, *, mensaje = None):
@@ -54,11 +58,15 @@ async def say(ctx, *, mensaje = None):
     await ctx.message.delete()
     await ctx.send(mensaje)
 
+
+
 #Youtube Search
 @client.command()
 async def yt(ctx, *, search):
     results = YoutubeSearch(search, max_results=1).to_dict()
     await ctx.send(f"**{str(results[0]['title'])}**" + "\nhttps://www.youtube.com" + str(results[0]['url_suffix']))
+
+
 
 #ServerCheck
 def is_it_lepirus_guild(ctx):
@@ -69,20 +77,22 @@ def is_it_lepirus_guild(ctx):
 @commands.check(is_it_lepirus_guild)
 async def schonkcreate(ctx):
     
-    choices = open('choices4.json', 'r')
-    choices1 = open('choices5.json', 'r')
-    choices2 = open('choices6.json', 'r')
+    choices = open('/choices/choices4.json', 'r')
+    choices1 = open('/choices/choices5.json', 'r')
+    choices2 = open('/choices/choices6.json', 'r')
     a1 = json.load(choices)
     a2 = json.load(choices1)
     a3 = json.load(choices2)    
     choose = random.choice(list(a1.values()))
     choose1 = random.choice(list(a2.values()))
     choose2 = random.choice(list(a3.values()))
-    embed = discord.Embed(colour=discord.Colour(0xf5a623),description="La palabra rara nueva inventada es: " + f"**{str(choose)+str(choose1)+str(choose2)}**")
+    embed = discord.Embed(colour=discord.Colour(0xf5a623),description=f"**{str(choose)+str(choose1)+str(choose2)}**")
     await ctx.send(embed=embed)
     choices.close()
     choices1.close()
     choices2.close()
+
+
 
 #Infoserver
 @client.command()
@@ -91,15 +101,16 @@ async def serverinfo(ctx):
 
     infoembed.set_footer(text="Holas!", icon_url="https://cdn.discordapp.com/avatars/796797535208341544/c6b3f004ea31246515f88524518984ff.png")
     infoembed.set_thumbnail(url=ctx.guild.icon_url)
-    infoembed.add_field(name="ID Del Servidor :", value=f"```{ctx.guild.id}```", inline= False)
-    infoembed.add_field(name="Creación :", value=f"```{ctx.guild.created_at}```", inline= False)  
-    infoembed.add_field(name="Propietario :",value=f"<@{ctx.guild.owner_id}>", inline= False)
-    infoembed.add_field(name="Región :",value=f"__{ctx.guild.region}__", inline= False)
-    infoembed.add_field(name="Cantidad de Miembros :", value=ctx.guild.member_count, inline= False)
-    infoembed.add_field(name="Nivel de Seguridad :", value=ctx.guild.mfa_level, inline= False)
-    infoembed.add_field(name="Canal por defecto :", value=ctx.guild.rules_channel, inline= False)
-    infoembed.add_field(name="Canales :", value=f"{len(ctx.guild.text_channels)} Texto | {len(ctx.guild.voice_channels)} Voz | **{len(ctx.guild.text_channels) + len(ctx.guild.voice_channels)}** Total", inline= False)
-    infoembed.add_field(name="Cantidad de Roles :", value=f"{len(ctx.guild.roles)}", inline= False)
-    await ctx.send(embed=infoembed)
+    infoembed.add_field(name="ID Del Servidor:", value=f"```{ctx.guild.id}```", inline= False)
+    infoembed.add_field(name="Creación:", value=f"```{ctx.guild.created_at}```", inline= False)  
+    infoembed.add_field(name="Propietario:",value=f"<@{ctx.guild.owner_id}>", inline= False)
+    infoembed.add_field(name="Región:",value=f"__{ctx.guild.region}__", inline= False)
+    infoembed.add_field(name="Cantidad de Miembros:", value=ctx.guild.member_count, inline= False)
+    infoembed.add_field(name="Nivel de Seguridad:", value=ctx.guild.mfa_level, inline= False)
+    infoembed.add_field(name="Canal por defecto:", value=ctx.guild.rules_channel, inline= False)
+    infoembed.add_field(name="Canales:", value=f"{len(ctx.guild.text_channels)} Texto | {len(ctx.guild.voice_channels)} Voz | **{len(ctx.guild.text_channels) + len(ctx.guild.voice_channels)}** Total", inline= False)
+    infoembed.add_field(name="Cantidad de Roles:", value=f"{len(ctx.guild.roles)}", inline= False)
+
+    
 
 client.run(token)
