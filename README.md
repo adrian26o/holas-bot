@@ -1,2 +1,4 @@
 # holas-bot
-Just a random Discord Bot project made by me and a friend, right now it's useless and basic as hell tho.
+Un projecto pequeño de un bot de discord semi-personal.
+
+La verdad no sé que mas decir xd.

@@ -6,10 +6,12 @@ import datetime
 import random
 import json
 
-
+#Hace login usando una variable de entorno para no revelar publicamente el token del bot.
 client = commands.Bot(command_prefix=commands.when_mentioned_or("h!"), help_command=None, activity=discord.Game(name="h!help", start=datetime.datetime.utcfromtimestamp(1612588761)))
 token = os.environ.get('TOKEN')
-#Hace login usando una variable de entorno para no revelar publicamente el token del bot.
+
+
+#Devuelve en la consola informacion sobre el cliente, because why not.
 @client.event
 async def on_ready():
     print("Holas!")
@@ -17,15 +19,17 @@ async def on_ready():
     print("Username: " + client.user.name+ "#" + client.user.discriminator)
     print("ID: " + str(client.user.id))
     print("Token: " + token)
-#Devuelve en la consola informacion sobre el cliente, because why not.
+    print("Servers: " + str(len(client.guilds)))
 
+
+#Error Handling para ciertas Exceptions al ejecutar comandos.
 @client.event
 async def on_command_error(ctx, error):
     if isinstance(error, discord.ext.commands.errors.CommandNotFound):
         embed = discord.Embed(title="Error", description="El comando que intentas usar no existe!.", colour= discord.Colour(0xf5a623))
         await ctx.send(embed=embed)
     if isinstance(error, discord.ext.commands.errors.MemberNotFound):
-        embed = discord.Embed(title="Error", description="El usuario que mencionaste no existe!.", colour= discord.Colour(0xf5a623))
+        embed = discord.Embed(title="Error", description="No se ha encontrado al usuario.", colour= discord.Colour(0xf5a623))
         await ctx.send(embed=embed)
     if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
         embed = discord.Embed(title="Error", description="Por favor declara los argumentos requeridos.", colour= discord.Colour(0xf5a623))
@@ -56,6 +60,7 @@ async def help(ctx):
     embed.add_field(name="```yt```", value="`yt [video]`.\nHace una busqueda en youtube usando [video] y devuelve el primer resultado.", inline=False)
     embed.add_field(name="```serverinfo```", value="Muestra información sobre este servidor.")
     embed.add_field(name="```userinfo```", value="`userinfo [usuario/mención/id/nombre]`.\nMuestra informacion sobre [usuario] o la persona que ejecuta el comando.")
+    embed.add_field(name="```enlarge```", value="`userinfo [emoji]`.\nHace que el bot responda con la imagen de [emote].")
     embed.add_field(name="```avatar```", value="`avatar [usuario/mencón/id/nombre]`.\nHace que el bot responda con el avatar de [usuario] o la persona que ejecuta el comando.")
     await ctx.send(content="Holas!, " + f"{ctx.message.author.mention} " + "aquí tienes tu ayuda", embed=embed)
 
@@ -90,7 +95,7 @@ async def yt(ctx, *, search):
 def is_it_lepirus_guild(ctx):
     return ctx.guild.id == 781631210262495292
 
-#Un comando privado para un server especifico,
+#Un comando privado para un server especifico.
 @client.command()
 @commands.check(is_it_lepirus_guild)
 async def schonkcreate(ctx):
@@ -120,7 +125,7 @@ async def serverinfo(ctx):
     embed.set_footer(text="Holas!", icon_url="https://cdn.discordapp.com/avatars/796797535208341544/c6b3f004ea31246515f88524518984ff.png")
     embed.set_thumbnail(url=ctx.guild.icon_url)
     embed.add_field(name="ID Del Servidor:", value=f"```{ctx.guild.id}```", inline= False)
-    embed.add_field(name="Creado en:", value=f"```{ctx.guild.created_at}```", inline= False)  
+    embed.add_field(name="Creado en:", value=ctx.guild.created_at, inline= False)  
     embed.add_field(name="Propietario:",value=f"<@{ctx.guild.owner_id}>", inline= False)
     embed.add_field(name="Región:",value=f"__{ctx.guild.region}__", inline= False)
     embed.add_field(name="Cantidad de Miembros:", value=ctx.guild.member_count, inline= False)
@@ -162,5 +167,22 @@ async def avatar(ctx, user: discord.Member = None):
     embed = discord.Embed(colour=discord.Colour(0xf5a623))
     embed.set_image(url=user.avatar_url_as(format='png' or 'gif', size=1024))
     await ctx.send(embed=embed)
+
+
+#Enlarge, devuelve la url de la imagen de un emote
+@client.command()
+async def enlarge(ctx, emote: discord.Emoji):
+    embed = discord.Embed(colour=discord.Colour(0xf5a623))
+    embed.set_image(url=emote.url_as(format='png' or 'gif'))
+    await ctx.send(embed=embed)
+
+#Avisa si el emote declarado no existe o no se encuentra en el servidor.
+@enlarge.error
+async def emojinotfound_error(ctx, error):
+    if isinstance(error, discord.ext.commands.EmojiNotFound):
+        embed = discord.Embed(title="Error", description="No se ha encontrado el emoji.", colour= discord.Colour(0xf5a623))
+        await ctx.send(embed=embed)
+
+
 
 client.run(token)
