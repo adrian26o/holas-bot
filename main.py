@@ -6,6 +6,7 @@ import datetime
 import random
 import json
 
+
 #Hace login usando una variable de entorno para no revelar publicamente el token del bot.
 client = commands.Bot(command_prefix=commands.when_mentioned_or("h!"), help_command=None, activity=discord.Game(name="h!help", start=datetime.datetime.utcfromtimestamp(1612588761)))
 token = os.environ.get('TOKEN')
@@ -36,6 +37,10 @@ async def on_command_error(ctx, error):
         await ctx.send(embed=embed)
     if isinstance(error, Exception):
         print(error)
+    if isinstance(error, discord.ext.commands.MissingPermissions):
+        embed = discord.Embed(title="Error", description="No tienes los permisos necesarios para ejecutar el comando.", colour= discord.Colour(0xf5a623))
+        await ctx.send(embed=embed)
+
 
 
 #Ping. Devuelve un embed con la latencia hacia la api de Discord.
@@ -58,10 +63,12 @@ async def help(ctx):
     embed.add_field(name="```say```", value="`say [mensaje]`.\nHace que el bot responda con[mensaje].", inline=False)
     embed.add_field(name="```ping```", value="Muestra la latencia del bot con discord.", inline=False)
     embed.add_field(name="```yt```", value="`yt [video]`.\nHace una busqueda en youtube usando [video] y devuelve el primer resultado.", inline=False)
-    embed.add_field(name="```serverinfo```", value="Muestra información sobre este servidor.")
-    embed.add_field(name="```userinfo```", value="`userinfo [usuario/mención/id/nombre]`.\nMuestra informacion sobre [usuario] o la persona que ejecuta el comando.")
-    embed.add_field(name="```enlarge```", value="`userinfo [emoji]`.\nHace que el bot responda con la imagen de [emote].")
-    embed.add_field(name="```avatar```", value="`avatar [usuario/mencón/id/nombre]`.\nHace que el bot responda con el avatar de [usuario] o la persona que ejecuta el comando.")
+    embed.add_field(name="```serverinfo```", value="Muestra información sobre este servidor.", inline=False)
+    embed.add_field(name="```userinfo```", value="`userinfo [usuario/mención/id/nombre]`.\nMuestra informacion sobre [usuario] o la persona que ejecuta el comando.", inline=False)
+    embed.add_field(name="```enlarge```", value="`enlarge [emoji]`.\nHace que el bot responda con la imagen de [emote].", inline=False)
+    embed.add_field(name="```ban```", value="`ban [usuario/mencón/id/nombre]`.\nBanea al [usuario] especificado, funciona con personas fuera del servidor actual.", inline=False)
+    embed.add_field(name="```unban```", value="`unban [usuario/mencón/id/nombre]`.\nDesbanea al [usuario] especificado, funciona con personas fuera del servidor actual.", inline=False)
+    embed.add_field(name="```avatar```", value="`avatar [usuario/mencón/id/nombre]`.\nHace que el bot responda con el avatar de [usuario] o la persona que ejecuta el comando.", inline=False)
     await ctx.send(content="Holas!, " + f"{ctx.message.author.mention} " + "aquí tienes tu ayuda", embed=embed)
 
 
@@ -184,5 +191,27 @@ async def emojinotfound_error(ctx, error):
         await ctx.send(embed=embed)
 
 
+
+#Ban, banea al usuario declarado con la razon declarada
+@commands.has_permissions(administrator=True, ban_members=True)
+@client.command()
+async def ban(ctx, user: discord.User = None):
+    embed = discord.Embed(title="You're going to brazil", description=f"El usuario {user.mention} ha sido correctamente enviado a Brasil", colour= discord.Colour(0xf5a623))
+    embed.set_image(url="https://tenor.com/view/crane-brazil-grab-poor-car-gif-17372636.gif")
+    user = await client.fetch_user(user.id)
+    await user.send("https://cdn.discordapp.com/attachments/781631210262495296/802260477161898034/video0-3.mp4")
+    await ctx.channel.send(embed=embed)
+    await ctx.guild.ban(user)
+
+@commands.has_permissions(administrator=True, ban_members=True)
+@client.command()
+async def unban(ctx, user: discord.User = None):
+    embed = discord.Embed(colour= discord.Colour(0xf5a623), description="[Acho ponte el chambergo](https://discord.gg/rxVfZZJcJ8)", title="Acho abre el enlace")
+    embed2 = discord.Embed(colour= discord.Colour(0xf5a623), description=f"El usuario {user.mention} ha vuelto de brasil")
+    embed2.set_image(url="https://cdn.discordapp.com/attachments/781631210262495296/808869945643106355/image0.jpg")
+    user = await client.fetch_user(user.id)
+    await user.send(embed=embed)
+    await ctx.channel.send(embed=embed2)
+    await ctx.guild.unban.user
 
 client.run(token)
