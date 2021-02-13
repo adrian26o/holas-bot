@@ -5,7 +5,7 @@ import os
 import datetime
 import random
 import json
-
+import requests
 
 #Hace login usando una variable de entorno para no revelar publicamente el token del bot.
 client = commands.Bot(command_prefix=commands.when_mentioned_or("h!"), help_command=None, activity=discord.Game(name="h!help", start=datetime.datetime.utcfromtimestamp(1612588761)))
@@ -59,16 +59,16 @@ async def help(ctx):
     embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/796797535208341544/c6b3f004ea31246515f88524518984ff.png")
     embed.set_author(name=ctx.message.author.name, icon_url=ctx.message.author.avatar_url)
     embed.set_footer(text="Prefix: h!", icon_url="https://cdn.discordapp.com/embed/avatars/0.png")
-    embed.add_field(name="```help```", value="Muestra este mensaje (duh).", inline=False)
-    embed.add_field(name="```say```", value="`say [mensaje]`.\nHace que el bot responda con[mensaje].", inline=False)
-    embed.add_field(name="```ping```", value="Muestra la latencia del bot con discord.", inline=False)
-    embed.add_field(name="```yt```", value="`yt [video]`.\nHace una busqueda en youtube usando [video] y devuelve el primer resultado.", inline=False)
-    embed.add_field(name="```serverinfo```", value="Muestra información sobre este servidor.", inline=False)
-    embed.add_field(name="```userinfo```", value="`userinfo [usuario/mención/id/nombre]`.\nMuestra informacion sobre [usuario] o la persona que ejecuta el comando.", inline=False)
-    embed.add_field(name="```enlarge```", value="`enlarge [emoji]`.\nHace que el bot responda con la imagen de [emote].", inline=False)
-    embed.add_field(name="```ban```", value="`ban [usuario/mencón/id/nombre]`.\nBanea al [usuario] especificado, funciona con personas fuera del servidor actual.", inline=False)
-    embed.add_field(name="```unban```", value="`unban [usuario/mencón/id/nombre]`.\nDesbanea al [usuario] especificado, funciona con personas fuera del servidor actual.", inline=False)
-    embed.add_field(name="```avatar```", value="`avatar [usuario/mencón/id/nombre]`.\nHace que el bot responda con el avatar de [usuario] o la persona que ejecuta el comando.", inline=False)
+    embed.add_field(name="`help`", value="Muestra este mensaje (duh).", inline=False)
+    embed.add_field(name="`say [mensaje]`.", value="\nHace que el bot responda con[mensaje].", inline=False)
+    embed.add_field(name="`ping`", value="Muestra la latencia del bot con discord.", inline=False)
+    embed.add_field(name="`yt [video]`.", value="\nHace una busqueda en youtube usando [video] y devuelve el primer resultado.", inline=False)
+    embed.add_field(name="`serverinfo`", value="Muestra información sobre este servidor.", inline=False)
+    embed.add_field(name="`userinfo [usuario/mención/id/nombre]`.", value="\nMuestra informacion sobre [usuario] o la persona que ejecuta el comando.", inline=False)
+    embed.add_field(name="`enlarge [emoji]`.", value="\nHace que el bot responda con la imagen de [emote].", inline=False)
+    embed.add_field(name="`ban [usuario/mención/id/nombre]`.", value="\nBanea al [usuario] especificado, funciona con personas fuera del servidor actual.", inline=False)
+    embed.add_field(name="`unban [usuario/mención/id/nombre]`.", value="\nDesbanea al [usuario] especificado, funciona con personas fuera del servidor actual.", inline=False)
+    embed.add_field(name="`avatar [usuario/mención/id/nombre]`.", value="\nHace que el bot responda con el avatar de [usuario] o la persona que ejecuta el comando.", inline=False)
     await ctx.send(content="Holas!, " + f"{ctx.message.author.mention} " + "aquí tienes tu ayuda", embed=embed)
 
 
@@ -203,15 +203,28 @@ async def ban(ctx, user: discord.User = None):
     await ctx.channel.send(embed=embed)
     await ctx.guild.ban(user)
 
+#Unban, anea al usuario declarado con la razon declarada
 @commands.has_permissions(administrator=True, ban_members=True)
 @client.command()
 async def unban(ctx, user: discord.User = None):
-    embed = discord.Embed(colour= discord.Colour(0xf5a623), description="[Acho ponte el chambergo](https://discord.gg/rxVfZZJcJ8)", title="Acho abre el enlace")
+    embed = discord.Embed(colour= discord.Colour(0xf5a623), description=f"Has sido desbaneado de **{ctx.guild.name}**", title="Atención")
     embed2 = discord.Embed(colour= discord.Colour(0xf5a623), description=f"El usuario {user.mention} ha vuelto de brasil")
     embed2.set_image(url="https://cdn.discordapp.com/attachments/781631210262495296/808869945643106355/image0.jpg")
     user = await client.fetch_user(user.id)
     await user.send(embed=embed)
     await ctx.channel.send(embed=embed2)
     await ctx.guild.unban.user
+
+@client.command()
+async def spoiler(ctx):
+    for discord.Attachment in ctx.message.attachments:
+        if len(ctx.message.attachments) == 0:
+            return
+        else:
+            await discord.Attachment.save(use_cached=True)
+            oldext = os.path.splitext("archivo")[1]
+            os.rename('archivo', 'SPOILER_archivo' + oldext)
+            await ctx.send(file=discord.File(fp="SPOILER_archivo",filename='SPOILER_archivo'))
+            os.remove("SPOILER_archivo")
 
 client.run(token)
