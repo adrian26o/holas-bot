@@ -296,7 +296,7 @@ async def hola(ctx, *, member: discord.Member = None):
 
 #Google, Realiza una busqueda usando una api de google y devuelve los 5 primeros resultados
 @client.command()
-async def google(ctx, search):
+async def google(ctx,*,search = None):
     if search == None:
         embed = discord.Embed(title="Eh...", description=f"{ctx.message.author.mention} Haz una búsqueda.", colour= discord.Colour(0xf5a623))
         await ctx.channel.send(embed=embed)
