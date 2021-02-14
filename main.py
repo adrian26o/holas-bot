@@ -40,6 +40,9 @@ async def on_command_error(ctx, error):
     if isinstance(error, discord.ext.commands.MissingPermissions):
         embed = discord.Embed(title="Error", description="No tienes los permisos necesarios para ejecutar el comando.", colour= discord.Colour(0xf5a623))
         await ctx.send(embed=embed)
+    if isinstance(error, discord.ext.commands.UserNotFound):
+        embed = discord.Embed(title="Error", description="No se ha encontrado al usuario.", colour= discord.Colour(0xf5a623))
+        await ctx.send(embed=embed)
 
 
 
@@ -214,21 +217,50 @@ async def emojinotfound_error(ctx, error):
 @commands.has_permissions(administrator=True, ban_members=True)
 @client.command()
 async def ban(ctx, user: discord.User = None):
-    embed = discord.Embed(title="You're going to brazil", description=f"El usuario {user.mention} ha sido correctamente enviado a Brasil", colour= discord.Colour(0xf5a623))
-    embed.set_image(url="https://tenor.com/view/crane-brazil-grab-poor-car-gif-17372636.gif")
-    await user.send("https://cdn.discordapp.com/attachments/781631210262495296/802260477161898034/video0-3.mp4")
-    await ctx.channel.send(embed=embed)
-    await ctx.guild.ban(user)
+    if user == None:
+        embed = discord.Embed(title="¡Ey!", description=f":warning: {ctx.message.author.mention} Menciona a alguien :warning:", colour= discord.Colour(0xf5a623))
+        await ctx.channel.send(embed=embed)
+    elif user == ctx.message.author:
+        embed = discord.Embed(title="¡Ey!", description=f":warning: {user.mention} No puedes autobanearte :warning:", colour= discord.Colour(0xf5a623))
+        await ctx.channel.send(embed=embed)
+    else:
+        embed = discord.Embed(title="You're going to brazil", description=f"El usuario {user.mention} ha sido correctamente enviado a Brasil", colour= discord.Colour(0xf5a623))
+        embed.set_image(url="https://tenor.com/view/crane-brazil-grab-poor-car-gif-17372636.gif")
+        await user.send("https://cdn.discordapp.com/attachments/781631210262495296/802260477161898034/video0-3.mp4")
+        await ctx.channel.send(embed=embed)
+        await ctx.guild.ban(user)
 
-#Unban, anea al usuario declarado con la razon declarada
+
+#Unban, desbanea al usuario declarado con la razon declarada
 @commands.has_permissions(administrator=True, ban_members=True)
 @client.command()
 async def unban(ctx, user: discord.User = None):
-    embed = discord.Embed(colour= discord.Colour(0xf5a623), description=f"Has sido desbaneado de **{ctx.guild.name}**", title="Atención")
-    embed2 = discord.Embed(colour= discord.Colour(0xf5a623), description=f"El usuario {user.mention} ha vuelto de brasil")
-    embed2.set_image(url="https://cdn.discordapp.com/attachments/781631210262495296/808869945643106355/image0.jpg")
-    await user.send(embed=embed)
-    await ctx.channel.send(embed=embed2)
-    await ctx.guild.unban(user)
+    if user == None:
+        embed = discord.Embed(title="¡Ey!", description=f":warning: {ctx.message.author.mention} Menciona a alguien :warning:", colour= discord.Colour(0xf5a623))
+        await ctx.channel.send(embed=embed)
+    elif user == ctx.message.author:
+        embed = discord.Embed(colour= discord.Colour(0xf5a623), description=f"{user.mention}, ¿Qué tratabas de hacer exactamente?.", title="¿Eh?")
+        await ctx.channel.send(embed=embed)
+    else:
+        embed = discord.Embed(colour= discord.Colour(0xf5a623), description=f"Has sido desbaneado de **{ctx.guild.name}**", title="Atención")
+        embed2 = discord.Embed(colour= discord.Colour(0xf5a623), description=f"El usuario {user.mention} ha vuelto de brasil")
+        embed2.set_image(url="https://cdn.discordapp.com/attachments/781631210262495296/808869945643106355/image0.jpg")
+        await user.send(embed=embed)
+        await ctx.channel.send(embed=embed2)
+        await ctx.guild.unban(user)
+
+#¡El HolasBot te saludará!
+@client.command()
+async def hola(ctx, *, member: discord.Member = None):
+    autor = ctx.message.author
+    mensaje1 =  f"¡El Usuario {autor.name} te ha saludado! :"
+    if member == None or member == ctx.message.author:
+        member = ctx.message.author
+        autor = client.user
+        mensaje1 = f"¡Hola {member.name}! Te mando un saludo :"
+    holaembed = discord.Embed(colour=discord.Colour(0xf5a623), title="¡Hola!",description=f"{member.mention}",clearmention = False)
+    holaembed.add_field(name=mensaje1,value= ":wave:",inline=False)
+    holaembed.set_author(icon_url=autor.avatar_url, name=autor.name)
+    await ctx.send(embed = holaembed)
 
 client.run(token)
