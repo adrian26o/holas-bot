@@ -147,10 +147,15 @@ async def achometro(ctx):
         519534411880988673,
         546031227266793472,
         624136223253987329,
-        492815944666578975
+        492815944666578975,
+        574386627091234818
     ]
     if ctx.message.author.id in idlist:
         x = 100
+        spembed = discord.Embed(colour=(0xf5a623), title="Acho que tu nivel de Acho es:", description="**100%**")
+        spembed.set_image(url="https://cdn.discordapp.com/attachments/774051815950909493/810627964185215116/bandera-de-extremadura.gif")
+        await ctx.channel.send(embed=spembed)
+        return
     else:
         for i in range(1, x, 10):
             i = "<:lime_concrete:810312413026582548>"
@@ -160,6 +165,7 @@ async def achometro(ctx):
             rangelist2.append(i2)
             rangelist3.append(i3)
     embed = discord.Embed(colour=discord.Colour(0xf5a623), title="Acho que tu nivel de Acho es:", description=f"{''.join(rangelist)}   **{x}%**\n{''.join(rangelist2)}\n{''.join(rangelist3)}")
+    
     await ctx.channel.send(embed=embed)
 #########################/
 
