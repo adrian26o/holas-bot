@@ -264,19 +264,12 @@ async def ban(ctx, user: discord.User, *, reason = None):
 @commands.has_permissions(administrator=True, ban_members=True)
 @client.command()
 async def unban(ctx, user: discord.User):
-    if user == None:
-        embed = discord.Embed(title="¡Ey!", description=f":warning: {ctx.message.author.mention} Menciona a alguien :warning:", colour= discord.Colour(0xf5a623))
-        await ctx.channel.send(embed=embed)
-    elif user == ctx.message.author:
-        embed = discord.Embed(colour= discord.Colour(0xf5a623), description=f"{user.mention}, ¿Qué tratabas de hacer exactamente?.", title="¿Eh?")
-        await ctx.channel.send(embed=embed)
-    else:
-        embed = discord.Embed(colour= discord.Colour(0xf5a623), description=f"Has sido desbaneado de **{ctx.guild.name}**", title="Atención")
-        embed2 = discord.Embed(colour= discord.Colour(0xf5a623), description=f"El usuario {user.mention} ha vuelto de brasil")
-        embed2.set_image(url="https://cdn.discordapp.com/attachments/781631210262495296/808869945643106355/image0.jpg")
-        await user.send(embed=embed)
-        await ctx.channel.send(embed=embed2)
-        await ctx.guild.unban(user)
+    embed = discord.Embed(colour= discord.Colour(0xf5a623), description=f"Has sido desbaneado de **{ctx.guild.name}**", title="Atención")
+    embed2 = discord.Embed(colour= discord.Colour(0xf5a623), description=f"El usuario {user.mention} ha vuelto de brasil")
+    embed2.set_image(url="https://cdn.discordapp.com/attachments/781631210262495296/808869945643106355/image0.jpg")
+    await user.send(embed=embed)
+    await ctx.channel.send(embed=embed2)
+    await ctx.guild.unban(user)
 #########################/
 
 
