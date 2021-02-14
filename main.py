@@ -6,6 +6,8 @@ import datetime
 import random
 import json
 import requests
+from googlesearch import search
+from tld import parse_tld
 
 #Hace login usando una variable de entorno para no revelar publicamente el token del bot.
 client = commands.Bot(command_prefix=commands.when_mentioned_or("h!"), help_command=None, activity=discord.Game(name="h!help", start=datetime.datetime.utcfromtimestamp(1612588761)))
@@ -72,6 +74,8 @@ async def help(ctx):
     embed.add_field(name="`ban [usuario/mención/id/nombre]`.", value="\nBanea al [usuario] especificado, funciona con gente fuera del servidor también.", inline=False)
     embed.add_field(name="`unban [id/nombre]`.", value="\nDesbanea al [usuario] especificado    .", inline=False)
     embed.add_field(name="`avatar [usuario/mención/id/nombre]`.", value="\nHace que el bot responda con el avatar de [usuario] o la persona que ejecuta el comando.", inline=False)
+    embed.add_field(name="`hola [usuario/mención/id/nombre]`.", value="\nHace que el bot responda con un saludo hacia un [usuario] o la persona que ejecuta el comando.", inline=False)
+    embed.add_field(name="`google [busqueda]`.", value="\nHace que el bot responda con una busqueda rápida en Google dandote a elegir de 5 opciones", inline=False)
     await ctx.send(content="Holas!, " + f"{ctx.message.author.mention} " + "aquí tienes tu ayuda", embed=embed)
 
 
@@ -263,4 +267,22 @@ async def hola(ctx, *, member: discord.Member = None):
     holaembed.set_author(icon_url=autor.avatar_url, name=autor.name)
     await ctx.send(embed = holaembed)
 
+#Busqueda por google
+@client.command()
+async def google(ctx,busqueda = None):
+    if busqueda == None:
+        embed = discord.Embed(title="Eh...", description=f"{ctx.message.author.mention} Haz una búsqueda.", colour= discord.Colour(0xf5a623))
+        await ctx.channel.send(embed=embed)
+    else:
+        busqueda2 = search(busqueda,stop=5,lang="es")
+        urls = [next(busqueda2),next(busqueda2),next(busqueda2),next(busqueda2),next(busqueda2)]
+        titulos = [parse_tld(urls[0]),parse_tld(urls[1]),parse_tld(urls[2]),parse_tld(urls[3]),parse_tld(urls[4])]
+        embed = discord.Embed(title=busqueda, description="Resultados:", colour= discord.Colour(0xf5a623))
+        embed.set_author(name=ctx.message.author,icon_url=ctx.message.author.avatar_url)
+        embed.add_field(inline=False,name=f"{titulos[0][1]}",value=urls[0])
+        embed.add_field(inline=False,name=f"{titulos[1][1]}",value=urls[1])
+        embed.add_field(inline=False,name=f"{titulos[2][1]}",value=urls[2])
+        embed.add_field(inline=False,name=f"{titulos[3][1]}",value=urls[3])
+        embed.add_field(inline=False,name=f"{titulos[4][1]}",value=urls[4])
+        await ctx.channel.send(embed=embed)
 client.run(token)
