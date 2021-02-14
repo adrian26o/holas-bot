@@ -66,8 +66,8 @@ async def help(ctx):
     embed.add_field(name="`serverinfo`", value="Muestra información sobre este servidor.", inline=False)
     embed.add_field(name="`userinfo [usuario/mención/id/nombre]`.", value="\nMuestra informacion sobre [usuario] o la persona que ejecuta el comando.", inline=False)
     embed.add_field(name="`enlarge [emoji]`.", value="\nHace que el bot responda con la imagen de [emote].", inline=False)
-    embed.add_field(name="`ban [usuario/mención/id/nombre]`.", value="\nBanea al [usuario] especificado, funciona con personas fuera del servidor actual.", inline=False)
-    embed.add_field(name="`unban [usuario/mención/id/nombre]`.", value="\nDesbanea al [usuario] especificado, funciona con personas fuera del servidor actual.", inline=False)
+    embed.add_field(name="`ban [usuario/mención/id/nombre]`.", value="\nBanea al [usuario] especificado, funciona con gente fuera del servidor también.", inline=False)
+    embed.add_field(name="`unban [id/nombre]`.", value="\nDesbanea al [usuario] especificado    .", inline=False)
     embed.add_field(name="`avatar [usuario/mención/id/nombre]`.", value="\nHace que el bot responda con el avatar de [usuario] o la persona que ejecuta el comando.", inline=False)
     await ctx.send(content="Holas!, " + f"{ctx.message.author.mention} " + "aquí tienes tu ayuda", embed=embed)
 
@@ -102,7 +102,7 @@ async def yt(ctx, *, search):
 def is_it_lepirus_guild(ctx):
     return ctx.guild.id == 781631210262495292
 
-#Un comando privado para un server especifico.
+#Unos comandos privado para un server especifico.
 @client.command()
 @commands.check(is_it_lepirus_guild)
 async def schonkcreate(ctx):
@@ -121,6 +121,24 @@ async def schonkcreate(ctx):
     choices.close()
     choices1.close()
     choices2.close()
+@client.command()
+@commands.check(is_it_lepirus_guild)
+async def achometro(ctx):
+    rangelist = []
+    rangelist2 = []
+    rangelist3 = []
+    z = 0
+    x = random.randrange(2,20)
+    for i in range(1, x):
+        i = "<:lime_concrete:810312413026582548>"
+        i2 = "<:white_concrete:810311770341769247>"
+        i3 = "<:black_concrete:810311770501414922>"
+        z += 5
+        rangelist.append(i)
+        rangelist2.append(i2)
+        rangelist3.append(i3)
+    embed = discord.Embed(colour=discord.Colour(0xf5a623), title="Acho que tu nivel de Acho es:", description=f"{''.join(rangelist)}   **{z}%**\n{''.join(rangelist2)}\n{''.join(rangelist3)}")
+    await ctx.channel.send(embed=embed)
 
 
 
@@ -198,7 +216,6 @@ async def emojinotfound_error(ctx, error):
 async def ban(ctx, user: discord.User = None):
     embed = discord.Embed(title="You're going to brazil", description=f"El usuario {user.mention} ha sido correctamente enviado a Brasil", colour= discord.Colour(0xf5a623))
     embed.set_image(url="https://tenor.com/view/crane-brazil-grab-poor-car-gif-17372636.gif")
-    user = await client.fetch_user(user.id)
     await user.send("https://cdn.discordapp.com/attachments/781631210262495296/802260477161898034/video0-3.mp4")
     await ctx.channel.send(embed=embed)
     await ctx.guild.ban(user)
@@ -210,21 +227,8 @@ async def unban(ctx, user: discord.User = None):
     embed = discord.Embed(colour= discord.Colour(0xf5a623), description=f"Has sido desbaneado de **{ctx.guild.name}**", title="Atención")
     embed2 = discord.Embed(colour= discord.Colour(0xf5a623), description=f"El usuario {user.mention} ha vuelto de brasil")
     embed2.set_image(url="https://cdn.discordapp.com/attachments/781631210262495296/808869945643106355/image0.jpg")
-    user = await client.fetch_user(user.id)
     await user.send(embed=embed)
     await ctx.channel.send(embed=embed2)
-    await ctx.guild.unban.user
-
-@client.command()
-async def spoiler(ctx):
-    for discord.Attachment in ctx.message.attachments:
-        if len(ctx.message.attachments) == 0:
-            return
-        else:
-            await discord.Attachment.save(use_cached=True)
-            oldext = os.path.splitext("archivo")[1]
-            os.rename('archivo', 'SPOILER_archivo' + oldext)
-            await ctx.send(file=discord.File(fp="SPOILER_archivo",filename='SPOILER_archivo'))
-            os.remove("SPOILER_archivo")
+    await ctx.guild.unban(user)
 
 client.run(token)
