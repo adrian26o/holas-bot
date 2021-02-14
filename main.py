@@ -294,7 +294,7 @@ async def google(ctx, * ,search1 = None):
         embed = discord.Embed(title="Error", description=f"{ctx.message.author.mention} Haz una búsqueda.", colour= discord.Colour(0xf5a623))
         await ctx.channel.send(embed=embed)
     else:
-        search2 = search(search1,stop=5,lang="es")
+        search2 = search(query=search1,stop=5)
         urls = [next(search2),next(search2),next(search2),next(search2),next(search2)]
         titles = [parse_tld(urls[0]),parse_tld(urls[1]),parse_tld(urls[2]),parse_tld(urls[3]),parse_tld(urls[4])]
         embed = discord.Embed(title=search, description="Resultados:", colour= discord.Colour(0xf5a623))
