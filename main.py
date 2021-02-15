@@ -289,21 +289,21 @@ async def hola(ctx, *, member: discord.Member = None):
 
 #Google, Realiza una busqueda usando una api de google y devuelve los 5 primeros resultados
 @client.command()
-async def google(ctx, * ,search1 = None):
-    if search1 == None:
-        embed = discord.Embed(title="Error", description=f"{ctx.message.author.mention} Haz una búsqueda.", colour= discord.Colour(0xf5a623))
+async def google(ctx,*,busqueda = None):
+    if busqueda == None:
+        embed = discord.Embed(title="Eh...", description=f"{ctx.message.author.mention} Haz una búsqueda.", colour= discord.Colour(0xf5a623))
         await ctx.channel.send(embed=embed)
     else:
-        search2 = search(query=search1,stop=5)
-        urls = [next(search2),next(search2),next(search2),next(search2),next(search2)]
-        titles = [parse_tld(urls[0]),parse_tld(urls[1]),parse_tld(urls[2]),parse_tld(urls[3]),parse_tld(urls[4])]
-        embed = discord.Embed(title=search, description="Resultados:", colour= discord.Colour(0xf5a623))
+        busqueda2 = search(query=busqueda,stop=5)
+        urls = [next(busqueda2),next(busqueda2),next(busqueda2),next(busqueda2),next(busqueda2)]
+        titulos = [parse_tld(urls[0]),parse_tld(urls[1]),parse_tld(urls[2]),parse_tld(urls[3]),parse_tld(urls[4])]
+        embed = discord.Embed(title=busqueda, description="Resultados:", colour= discord.Colour(0xf5a623))
         embed.set_author(name=ctx.message.author,icon_url=ctx.message.author.avatar_url)
-        embed.add_field(inline=False,name=f"{titles[0][1]}",value=urls[0])
-        embed.add_field(inline=False,name=f"{titles[1][1]}",value=urls[1])
-        embed.add_field(inline=False,name=f"{titles[2][1]}",value=urls[2])
-        embed.add_field(inline=False,name=f"{titles[3][1]}",value=urls[3])
-        embed.add_field(inline=False,name=f"{titles[4][1]}",value=urls[4])
+        embed.add_field(inline=False,name=f"{titulos[0][1]}",value=urls[0])
+        embed.add_field(inline=False,name=f"{titulos[1][1]}",value=urls[1])
+        embed.add_field(inline=False,name=f"{titulos[2][1]}",value=urls[2])
+        embed.add_field(inline=False,name=f"{titulos[3][1]}",value=urls[3])
+        embed.add_field(inline=False,name=f"{titulos[4][1]}",value=urls[4])
         await ctx.channel.send(embed=embed)
 #########################/
 
