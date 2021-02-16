@@ -3,3 +3,4 @@ discord==1.0.1
 youtube-search==1.1.1
 google==3.0.0
 tld==0.12.5
+google_images_search==1.3.5
