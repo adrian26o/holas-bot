@@ -8,11 +8,12 @@ import json
 import requests
 from googlesearch import search
 from tld import parse_tld
-
+from google_images_search import GoogleImagesSearch
 
 #Hace login usando una variable de entorno para no revelar publicamente el token del bot.
 client = commands.Bot(command_prefix=commands.when_mentioned_or("h!"), help_command=None, activity=discord.Game(name="h!help", start=datetime.datetime.utcfromtimestamp(1612588761)))
 token = os.environ.get('TOKEN')
+gis = GoogleImagesSearch(os.environ.get("GCS_DEVELOPER_KEY"),os.environ.get("GCS_CX"))
 #########################/
 
 
@@ -277,7 +278,7 @@ async def unban(ctx, user: discord.User):
 
 #¡El HolasBot te saludará!
 @client.command()
-async def hola(ctx, *, member: discord.Member = None):
+async def hola(ctx, *, member: discord.Member = None): 
     if member == None:
         member = ctx.message.author
     embed = discord.Embed(colour=discord.Colour(0xf5a623), title="¡Hola!",description=f"{member.mention}", clearmention = False)
@@ -308,6 +309,28 @@ async def google(ctx, * ,search1 = None):
         await ctx.channel.send(embed=embed)
 #########################/
 
+
+
+#Img, hace una busqueda en google imagenes y devuelve el primer resultado.
+@client.command()
+async def img(ctx, *, search):
+    search_params = {
+        "q": search,
+        "num": 1,
+        "safe": 'medium',
+        "fileType": 'jpg',
+        "imgType": 'photo',
+        "imgSize": 'XXLARGE'
+    }
+    
+    gis.search(search_params=search_params, path_to_dir="", custom_image_name="image")
+    for image in gis.results():
+        image.download("images")
+    imagefile = discord.File(filename="image.png", fp="images/image.jpg")
+    embed = discord.Embed(colour= discord.Colour(0xf5a623), title="Aquí esta su resultado!")
+    await ctx.send(embed=embed, file=imagefile)
+    os.remove("images/image.jpg")
+#########################/
 
 
 client.run(token)
