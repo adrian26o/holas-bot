@@ -277,13 +277,17 @@ async def unban(ctx, user: discord.User):
 
 #¡El HolasBot te saludará!
 @client.command()
-async def hola(ctx, *, member: discord.Member = None): 
-    if member == None:
+async def hola(ctx, *, member: discord.Member = None):
+    author = ctx.message.author
+    message1 =  f"¡El Usuario {author.name} te ha saludado! :"
+    if member == None or member == ctx.message.author:
         member = ctx.message.author
-    embed = discord.Embed(colour=discord.Colour(0xf5a623), title="¡Hola!",description=f"{member.mention}", clearmention = False)
-    embed.add_field(name=f"¡El Usuario {client.user.name} te ha saludado! :",value= ":wave:",inline=False)
-    embed.set_author(icon_url=client.user.avatar_url, name=member.name)
-    await ctx.send(embed=embed)
+        author = client.user
+        message1 = f"¡Hola {member.name}! Te mando un saludo :"
+    holaembed = discord.Embed(colour=discord.Colour(0xf5a623), title="¡Hola!",description=f"{member.mention}",clearmention = False)
+    holaembed.add_field(name=message1,value= ":wave:",inline=False)
+    holaembed.set_author(icon_url=author.avatar_url, name=author.name)
+    await ctx.send(embed = holaembed)
 #########################/
 
 
