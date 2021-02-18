@@ -183,8 +183,7 @@ async def serverinfo(ctx):
     embed.add_field(name="Propietario:",value=f"<@{ctx.guild.owner_id}>", inline= False)
     embed.add_field(name="Región:",value=f"__{ctx.guild.region}__", inline= False)
     embed.add_field(name="Cantidad de Miembros:", value=ctx.guild.member_count, inline= False)
-    embed.add_field(name="Nivel de Seguridad:", value=ctx.guild.mfa_level, inline= False)
-    embed.add_field(name="Canal por defecto:", value=f"<#{ctx.guild.rules_channel.id}>", inline= False)
+    embed.add_field(name="Nivel de Seguridad:", value=ctx.guild.mfa_level, inline= False)   
     embed.add_field(name="Canales:", value=f"{len(ctx.guild.text_channels)} Texto | {len(ctx.guild.voice_channels)} Voz | **{len(ctx.guild.text_channels) + len(ctx.guild.voice_channels)}** Total", inline= False)
     embed.add_field(name="Cantidad de Roles:", value=f"{len(ctx.guild.roles)}", inline= False)
     await ctx.send(embed=embed)
@@ -320,7 +319,7 @@ async def img(ctx, *, search):
         "safe": 'medium',
         "fileType": 'jpg',
         "imgType": 'photo',
-        "imgSize": 'XXLARGE'
+        "imgSize": 'LARGE'
     }
     
     gis.search(search_params=search_params, path_to_dir="", custom_image_name="image")
