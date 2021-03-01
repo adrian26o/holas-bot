@@ -29,20 +29,25 @@ async def on_command_error(ctx, error):
     if isinstance(error, discord.ext.commands.errors.CommandNotFound):
         embed = discord.Embed(title="Error", description="El comando que intentas usar no existe!.", colour= discord.Colour(0xf5a623))
         await ctx.send(embed=embed)
+
     if isinstance(error, discord.ext.commands.errors.MemberNotFound):
         embed = discord.Embed(title="Error", description="No se ha encontrado al usuario.", colour= discord.Colour(0xf5a623))
         await ctx.send(embed=embed)
+
     if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
         embed = discord.Embed(title="Error", description="Por favor declara los argumentos requeridos.", colour= discord.Colour(0xf5a623))
         await ctx.send(embed=embed)
-    if isinstance(error, Exception):
-        print(error)
+
     if isinstance(error, discord.ext.commands.MissingPermissions):
         embed = discord.Embed(title="Error", description="No tienes los permisos necesarios para ejecutar el comando.", colour= discord.Colour(0xf5a623))
         await ctx.send(embed=embed)
+
     if isinstance(error, discord.ext.commands.UserNotFound):
         embed = discord.Embed(title="Error", description="No se ha encontrado al usuario.", colour= discord.Colour(0xf5a623))
         await ctx.send(embed=embed)
+
+    if isinstance(error, Exception):
+        print(error)
 #########################/
 
 
@@ -76,6 +81,7 @@ async def help(ctx):
     embed.add_field(name="`avatar [usuario/mención/id/nombre]`.", value="\nHace que el bot responda con el avatar de [usuario] o la persona que ejecuta el comando.", inline=False)
     embed.add_field(name="`hola [usuario/mención/id/nombre]`.", value="\nHace que el bot responda con un saludo hacia un [usuario] o la persona que ejecuta el comando.", inline=False)
     embed.add_field(name="`google [busqueda]`.", value="\nHace que el bot responda con una busqueda rápida en Google dandote a elegir de 5 opciones", inline=False)
+    embed.add_field(name="`tenor [busqueda]`.", value="\nBusca un gif aleatorio según el termino [busqueda] y devuelve uno aleatorio de una lista de 15 resultados.")
     await ctx.send(content="Holas!, " + f"{ctx.message.author.mention} " + "aquí tienes tu ayuda", embed=embed)
 #########################/
 
