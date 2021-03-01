@@ -1,11 +1,6 @@
-import discord
+import discord, os, datetime, random, json, requests
 from discord.ext import commands
 from youtube_search import YoutubeSearch
-import os
-import datetime
-import random
-import json
-import requests
 from googlesearch import search
 from tld import parse_tld
 from google_images_search import GoogleImagesSearch
@@ -334,6 +329,25 @@ async def img(ctx, *, search):
     await ctx.send(embed=embed, file=imagefile)
     os.remove("images/image.jpg")
 #########################/
+
+
+#Tenor, hace una busqueda en tenor, agarra los 15 primeros resultados, selecciona uno aleatorio y lo devuelve.
+@client.command()
+async def tenor(ctx, *, search_term):
+    embed = discord.Embed(color=0xf5a623, title="Aquí esta su resultado!")
+    
+    akey = "JBZCHHI0B0BO"
+    lmt = 15
+
+    r = requests.get (f"https://g.tenor.com/v1/search?q={search_term}&key={akey}&limit={lmt}")
+    if r.status_code == 200:
+        gifs = json.loads(r.content)
+        b = random.choice(gifs['results'])
+        embed.set_image(url=b["media"][0]["mediumgif"]["url"])
+        embed.set_footer(text=b["title"])
+    await ctx.send(embed=embed)
+#########################/
+
 
 
 client.run(token)
