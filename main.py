@@ -8,7 +8,7 @@ import asyncio
 
 #Hace login usando una variable de entorno para no revelar publicamente el token del bot.
 intents= discord.Intents.all()
-client = commands.Bot(command_prefix=commands.when_mentioned_or("h!"), help_command=None, activity=discord.Game(name="h!help", start=datetime.datetime.utcfromtimestamp(1612588761)), intents=intents)
+client = commands.Bot(command_prefix=commands.when_mentioned_or("h!"), help_command=None, activity=discord.Game(name="h!help", start=datetime.datetime.utcnow(), intents=intents, case_insensitive=True))
 token = os.environ.get('TOKEN')
 gis = GoogleImagesSearch(os.environ.get("GCS_DEVELOPER_KEY"),os.environ.get("GCS_CX"))
 #########################/
@@ -54,44 +54,43 @@ async def on_command_error(ctx, error):
 
 
 
+#Help, Embed con una lista de todos los comandos públicos.
+@client.command(usage="`help`", help="Muestra este mensaje (duh)")
+async def help(ctx, cmdname = None):
+    print(cmdname)
+    embed = discord.Embed(timestamp=datetime.datetime.utcnow(), title="Ayuda", description="Acá una lista de todos los comandos del bot, para una descripcion detallada de un comando escribe h!help [comando]", colour=discord.Colour(0xf5a623))
+    embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/796797535208341544/c6b3f004ea31246515f88524518984ff.png")
+    embed.set_author(name=ctx.message.author.name, icon_url=ctx.message.author.avatar_url)
+    embed.set_footer(text="Prefix: h!")
+    embed.add_field(name="Administración/Moderación", value="`ban` `unban`")
+    embed.add_field(name="Informativos", value="`avatar` `serverinfo` `userinfo` `help` `enlarge` `ping`")
+    embed.add_field(name="Diversión", value="`google` `tenor` `hola` `say`")
+
+    if cmdname == None:
+        await ctx.send(content=f"Holas!, {ctx.message.author.mention} aquí tienes tu ayuda", embed=embed)
+    else:
+        cmd = client.get_command(cmdname.capitalize())
+        cmdembed = discord.Embed(timestamp=datetime.datetime.utcnow(), colour=discord.Colour(0xf5a623), title=cmd.name)
+        cmdembed.add_field(name="Uso", value=cmd.usage, inline=False)
+        cmdembed.add_field(name="Función :nut_and_bolt:", value=cmd.help, inline=False)
+        cmdembed.add_field(name="Notas :notepad_spiral:", value=cmd.brief, inline=False)
+        await ctx.send(embed=cmdembed)
+#########################/
+
+
+
 #Ping. Devuelve un embed con la latencia hacia la api de Discord.
-@client.command()
-async def ping(ctx):
+@client.command(usage="`ping`", help="Muestra la latencia del bot con discord", brief="No se han especificado notas en este comando")
+async def Ping(ctx):
     embed = discord.Embed(timestamp=datetime.datetime.utcnow(), colour=discord.Colour(0xf5a623),description="La latencia del bot es: " + f"**{round(client.latency*1000)}**ms")
     await ctx.send(embed=embed)
 #########################/
 
 
 
-#Help, Embed con una lista de todos los comandos públicos.
-@client.command()
-async def help(ctx):
-    embed = discord.Embed(timestamp=datetime.datetime.utcnow(), title="Comandos", colour=discord.Colour(0xf5a623))
-
-    embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/796797535208341544/c6b3f004ea31246515f88524518984ff.png")
-    embed.set_author(name=ctx.message.author.name, icon_url=ctx.message.author.avatar_url)
-    embed.set_footer(text="Prefix: h!", icon_url="https://cdn.discordapp.com/embed/avatars/0.png")
-    embed.add_field(name="`help`", value="Muestra este mensaje (duh).", inline=False)
-    embed.add_field(name="`say [mensaje]`.", value="\nHace que el bot responda con[mensaje].", inline=False)
-    embed.add_field(name="`ping`", value="Muestra la latencia del bot con discord.", inline=False)
-    embed.add_field(name="`yt [video]`.", value="\nHace una busqueda en youtube usando [video] y devuelve el primer resultado.", inline=False)
-    embed.add_field(name="`serverinfo`", value="Muestra información sobre este servidor.", inline=False)
-    embed.add_field(name="`userinfo [usuario/mención/id/nombre]`.", value="\nMuestra informacion sobre [usuario] o la persona que ejecuta el comando.", inline=False)
-    embed.add_field(name="`enlarge [emoji]`.", value="\nHace que el bot responda con la imagen de [emote].", inline=False)
-    embed.add_field(name="`ban [usuario/mención/id/nombre]`.", value="\nBanea al [usuario] especificado, funciona con gente fuera del servidor también.", inline=False)
-    embed.add_field(name="`unban [id/nombre]`.", value="\nDesbanea al [usuario] especificado    .", inline=False)
-    embed.add_field(name="`avatar [usuario/mención/id/nombre]`.", value="\nHace que el bot responda con el avatar de [usuario] o la persona que ejecuta el comando.", inline=False)
-    embed.add_field(name="`hola [usuario/mención/id/nombre]`.", value="\nHace que el bot responda con un saludo hacia un [usuario] o la persona que ejecuta el comando.", inline=False)
-    embed.add_field(name="`google [busqueda]`.", value="\nHace que el bot responda con una busqueda rápida en Google dandote a elegir de 5 opciones", inline=False)
-    embed.add_field(name="`tenor [busqueda]`.", value="\nBusca un gif aleatorio según el termino [busqueda] y devuelve uno aleatorio de una lista de 15 resultados.")
-    await ctx.send(content="Holas!, " + f"{ctx.message.author.mention} " + "aquí tienes tu ayuda", embed=embed)
-#########################/
-
-
-
 #Say, Devuelve el mensaje que el usuario declaró despues del comando.
-@client.command(aliases=["s"])
-async def say(ctx, *, mensaje = None):
+@client.command(usage="`say|s [mensaje]`", help="Hace que el bot responda con[mensaje]", brief="No se han especificado notas en este comando", aliases=["s"])
+async def Say(ctx, *, mensaje = None):
     if len(ctx.message.mentions) != 0:
         await ctx.send(f"{ctx.message.author.mention}, No puedes mencionar gente o roles en tu mensaje 😠")
         await ctx.message.delete()
@@ -108,8 +107,8 @@ async def say(ctx, *, mensaje = None):
 
 
 #Youtube, hace una busqueda en youtube y devuelve el link del primer resultado.
-@client.command(aliases=["youtube"])
-async def yt(ctx, *, search):
+@client.command(usage="`yt|youtube [video]`", help="Hace una busqueda en youtube usando [video] y devuelve el primer resultado", brief="No se han especificado notas en este comando", aliases=["youtube"])
+async def Yt(ctx, *, search):
     results = YoutubeSearch(search, max_results=1).to_dict()
     await ctx.send(f"**{str(results[0]['title'])}**" + "\nhttps://www.youtube.com" + str(results[0]['url_suffix']))
 #########################/
@@ -120,9 +119,9 @@ async def yt(ctx, *, search):
 def is_it_lepirus_guild(ctx):
     return ctx.guild.id == 781631210262495292
 #Unos comandos privado para un server especifico.
-@client.command()
+@client.command(usage="", help="", brief="No se han especificado notas en este comando", )
 @commands.check(is_it_lepirus_guild)
-async def schonkcreate(ctx):
+async def Schonkcreate(ctx):
     
     choices = open('choices/choices4.json', 'r')
     choices1 = open('choices/choices5.json', 'r')
@@ -139,9 +138,9 @@ async def schonkcreate(ctx):
     choices1.close()
     choices2.close()
 
-@client.command()
+@client.command(usage="", help="", brief="No se han especificado notas en este comando", )
 @commands.check(is_it_lepirus_guild)
-async def achometro(ctx):
+async def Achometro(ctx):
     rangelist = []
     rangelist2 = []
     rangelist3 = []
@@ -176,8 +175,8 @@ async def achometro(ctx):
 
 
 #Serverinfo, Devuelve un embed con un puñado de informacion sobre el servidor donde fue ejecutado el comando.
-@client.command(aliases=["svinfo", "svinf"])
-async def serverinfo(ctx):
+@client.command(usage="`serverinfo|svinf`", help="Muestra información sobre este servidor", brief="No se han especificado notas en este comando", aliases=["svinfo", "svinf"])
+async def ServerInfo(ctx):
     embed = discord.Embed(timestamp=datetime.datetime.utcnow(), title=f"🖥️ {ctx.guild.name}", colour=discord.Colour(0xf5a623))
     embed.set_footer(text="Holas!", icon_url="https://cdn.discordapp.com/avatars/796797535208341544/c6b3f004ea31246515f88524518984ff.png")
     embed.set_thumbnail(url=ctx.guild.icon_url)
@@ -195,8 +194,8 @@ async def serverinfo(ctx):
 
 
 #UserInfo, Devuelve un embed con informacion sobre el usuario que ejecuta el mensaje o el aclarado con una mencion
-@client.command(aliases=["uinfo", "uinf", "whois"])
-async def userinfo(ctx, user: discord.Member = None):
+@client.command(usage="`userinfo|whois [usuario/mención/id/nombre]`", help="Muestra informacion sobre [usuario] o la persona que ejecuta el comando", brief="No se han especificado notas en este comando", aliases=["uinfo", "uinf", "whois"])
+async def UserInfo(ctx, user: discord.Member = None):
     if user == None:
         user = ctx.message.author
     embed = discord.Embed(timestamp=datetime.datetime.utcnow(), title=user.name + "#" + str(user.discriminator), colour=discord.Colour(0xf5a623))
@@ -218,8 +217,8 @@ async def userinfo(ctx, user: discord.Member = None):
 
 
 #Avatar, Devuelve el avatar del usuario que ejecuta el comando o el especificado con una mención
-@client.command(aliases=["av"])
-async def avatar(ctx, user: discord.Member = None):
+@client.command(usage="`avatar|av [usuario/mención/id/nombre]`", help="Hace que el bot responda con el avatar de [usuario] o la persona que ejecuta el comando", brief="No se han especificado notas en este comando", aliases=["av"])
+async def Avatar(ctx, user: discord.Member = None):
     if user == None:
         user = ctx.message.author
     embed = discord.Embed(timestamp=datetime.datetime.utcnow(), colour=discord.Colour(0xf5a623))
@@ -230,14 +229,14 @@ async def avatar(ctx, user: discord.Member = None):
 
 
 #Enlarge, devuelve la url de la imagen de un emote
-@client.command(aliases=["e"])
-async def enlarge(ctx, emote: discord.Emoji):
+@client.command(usage="`enlarge|e [emoji]`", help="Hace que el bot responda con la imagen de [emote]", brief="No se han especificado notas en este comando", aliases=["e"])
+async def Enlarge(ctx, emote: discord.Emoji):
     embed = discord.Embed(timestamp=datetime.datetime.utcnow(), colour=discord.Colour(0xf5a623))
     embed.set_image(url=emote.url_as(format='png' or 'gif'))
     await ctx.send(embed=embed)
 
 #Avisa si el emote declarado no existe o no se encuentra en el servidor.
-@enlarge.error
+@Enlarge.error
 async def emojinotfound_error(ctx, error):
     if isinstance(error, discord.ext.commands.EmojiNotFound):
         embed = discord.Embed(timestamp=datetime.datetime.utcnow(), title="Error", description="No se ha encontrado el emoji.", colour= discord.Colour(0xf5a623))
@@ -248,8 +247,8 @@ async def emojinotfound_error(ctx, error):
 
 #Ban, banea al usuario declarado con la razon declarada
 @commands.has_permissions(administrator=True, ban_members=True)
-@client.command()
-async def ban(ctx, user: discord.User, *, reason = None):
+@client.command(usage="`ban [usuario/mención/id/nombre]`", help="Banea al [usuario] especificado, funciona con gente fuera del servidor también.", brief="No se han especificado notas en este comando", )
+async def Ban(ctx, user: discord.User, *, reason = None):
     if user == ctx.message.author:
         embed = discord.Embed(timestamp=datetime.datetime.utcnow(), title="¡Ey!", description=f":warning: {user.mention} No puedes autobanearte :warning:", colour= discord.Colour(0xf5a623))
         await ctx.channel.send(embed=embed)
@@ -266,8 +265,8 @@ async def ban(ctx, user: discord.User, *, reason = None):
 
 #Unban, desbanea al usuario declarado con la razon declarada
 @commands.has_permissions(administrator=True, ban_members=True)
-@client.command()
-async def unban(ctx, user: discord.User):
+@client.command(usage="`unban [id/nombre]`", help="Desbanea al [usuario] especificado", brief="No se han especificado notas en este comando", )
+async def Unban(ctx, user: discord.User):
     embed = discord.Embed(timestamp=datetime.datetime.utcnow(), colour= discord.Colour(0xf5a623), description=f"Has sido desbaneado de **{ctx.guild.name}**", title="Atención")
     embed2 = discord.Embed(timestamp=datetime.datetime.utcnow(), colour= discord.Colour(0xf5a623), description=f"El usuario {user.mention} ha vuelto de brasil")
     embed2.set_image(url="https://cdn.discordapp.com/attachments/781631210262495296/808869945643106355/image0.jpg")
@@ -279,8 +278,8 @@ async def unban(ctx, user: discord.User):
 
 
 #¡El HolasBot te saludará!
-@client.command()
-async def hola(ctx, *, member: discord.Member = None):
+@client.command(usage="`hola [usuario/mención/id/nombre]`", help="Hace que el bot responda con un saludo hacia un [usuario] o la persona que ejecuta el comando", brief="No se han especificado notas en este comando", )
+async def Hola(ctx, *, member: discord.Member = None):
     author = ctx.message.author
     message1 =  f"¡El Usuario {author.name} te ha saludado! :"
     if member == None or member == ctx.message.author:
@@ -296,8 +295,8 @@ async def hola(ctx, *, member: discord.Member = None):
 
 
 #Google, Realiza una busqueda usando una api de google y devuelve los 5 primeros resultados
-@client.command(aliases=["g"])
-async def google(ctx, * ,search1 = None):
+@client.command(usage="`google [busqueda]`", help="Hace que el bot responda con una busqueda rápida en Google dandote a elegir de 5 opciones", brief="No se han especificado notas en este comando", aliases=["g"])
+async def Google(ctx, * ,search1 = None):
     if search1 == None:
         embed = discord.Embed(timestamp=datetime.datetime.utcnow(), title="Error", description=f"{ctx.message.author.mention} Haz una búsqueda.", colour= discord.Colour(0xf5a623))
         await ctx.channel.send(embed=embed)
@@ -318,8 +317,8 @@ async def google(ctx, * ,search1 = None):
 
 
 #Img, hace una busqueda en google imagenes y devuelve el primer resultado.
-@client.command(aliases=["image"])
-async def img(ctx, *, search):
+@client.command(usage="", help="", brief="No se han especificado notas en este comando", aliases=["image"])
+async def Img(ctx, *, search):
     search_params = {
         "q": search,
         "num": 1,
@@ -340,8 +339,8 @@ async def img(ctx, *, search):
 
 
 #Tenor, hace una busqueda en tenor, agarra los 15 primeros resultados, selecciona uno aleatorio y lo devuelve.
-@client.command(aliases=["t", "gif"])
-async def tenor(ctx, *, search_term):
+@client.command(usage="`tenor [busqueda]`", help="Busca un gif aleatorio según el termino [busqueda] y devuelve uno aleatorio de una lista de 15 resultados", brief="No se han especificado notas en este comando", aliases=["t", "gif"])
+async def Tenor(ctx, *, search_term):
     embed = discord.Embed(timestamp=datetime.datetime.utcnow(), color=0xf5a623, title="Aquí esta su resultado!")
     
     akey = "JBZCHHI0B0BO"
