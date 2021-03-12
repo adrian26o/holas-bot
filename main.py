@@ -63,7 +63,7 @@ async def help(ctx, cmdname = None):
     embed.set_footer(text="Prefix: h!")
     embed.add_field(name="Administración/Moderación", value="`ban` `unban`")
     embed.add_field(name="Informativos", value="`avatar` `serverinfo` `userinfo` `help` `enlarge` `ping`")
-    embed.add_field(name="Diversión", value="`google` `tenor` `hola` `say`")
+    embed.add_field(name="Diversión", value="`google` `tenor` `hola` `say` `dado` `coin`")
 
     if cmdname == None:
         await ctx.send(content=f"Holas!, {ctx.message.author.mention} aquí tienes tu ayuda", embed=embed)
@@ -106,7 +106,7 @@ async def say(ctx, *, mensaje = None):
 
 
 #Youtube, hace una busqueda en youtube y devuelve el link del primer resultado.
-@client.command(usage="`yt|youtube [video]`", help="Hace una busqueda en youtube usando [video] y devuelve el primer resultado", brief="No se han especificado notas en este comando", aliases=["youtube"])
+@client.command(usage="`yt|youtube [video]`", help="Hace una busqueda en youtube usando [video] y devuelve el primer resultado", brief="No se han especificado notas en este comando", aliases=["youtube","video"])
 async def yt(ctx, *, search):
     results = YoutubeSearch(search, max_results=1).to_dict()
     await ctx.send(f"**{str(results[0]['title'])}**" + "\nhttps://www.youtube.com" + str(results[0]['url_suffix']))
@@ -174,7 +174,7 @@ async def achometro(ctx):
 
 
 #Serverinfo, Devuelve un embed con un puñado de informacion sobre el servidor donde fue ejecutado el comando.
-@client.command(usage="`serverinfo|svinf`", help="Muestra información sobre este servidor", brief="No se han especificado notas en este comando", aliases=["svinfo", "svinf"])
+@client.command(usage="`serverinfo|svinf`", help="Muestra información sobre este servidor", brief="No se han especificado notas en este comando", aliases=["svinfo", "svinf", "guild", "guildinfo"])
 async def serverinfo(ctx):
     embed = discord.Embed(timestamp=datetime.datetime.utcnow(), title=f"🖥️ {ctx.guild.name}", colour=discord.Colour(0xf5a623))
     embed.set_footer(text="Holas!", icon_url="https://cdn.discordapp.com/avatars/796797535208341544/c6b3f004ea31246515f88524518984ff.png")
@@ -277,7 +277,7 @@ async def unban(ctx, user: discord.User):
 
 
 #¡El HolasBot te saludará!
-@client.command(usage="`hola [usuario/mención/id/nombre]`", help="Hace que el bot responda con un saludo hacia un [usuario] o la persona que ejecuta el comando", brief="No se han especificado notas en este comando", )
+@client.command(usage="`hola [usuario/mención/id/nombre]`", help="Hace que el bot responda con un saludo hacia un [usuario] o la persona que ejecuta el comando", brief="No se han especificado notas en este comando",aliases=["hi","holas"])
 async def hola(ctx, *, member: discord.Member = None):
     author = ctx.message.author
     message1 =  f"¡El Usuario {author.name} te ha saludado! :"
@@ -316,7 +316,7 @@ async def google(ctx, * ,search1 = None):
 
 
 #Img, hace una busqueda en google imagenes y devuelve el primer resultado.
-@client.command(usage="", help="", brief="No se han especificado notas en este comando", aliases=["image"])
+@client.command(usage="`img [busqueda]`", help="Busca una imagen dependiendo el termino [busqueda]", brief="No se han especificado notas en este comando", aliases=["image"])
 async def img(ctx, *, search):
     search_params = {
         "q": search,
@@ -340,7 +340,7 @@ async def img(ctx, *, search):
 #Tenor, hace una busqueda en tenor, agarra los 15 primeros resultados, selecciona uno aleatorio y lo devuelve.
 @client.command(usage="`tenor [busqueda]`", help="Busca un gif aleatorio según el termino [busqueda] y devuelve uno aleatorio de una lista de 15 resultados", brief="No se han especificado notas en este comando", aliases=["t", "gif"])
 async def tenor(ctx, *, search_term):
-    embed = discord.Embed(timestamp=datetime.datetime.utcnow(), color=0xf5a623, title="Aquí esta su resultado!")
+    embed = discord.Embed(timestamp=datetime.datetime.utcnow(), color=0xf5a623, title="¡Aquí esta su resultado!")
     
     akey = "JBZCHHI0B0BO"
     lmt = 15
@@ -354,5 +354,31 @@ async def tenor(ctx, *, search_term):
     await ctx.send(embed=embed)
 #########################/
 
+#Coin, Girará una moneda, cayendo cara o cruz.
+@client.command(usage="`coin`", help="Devolverá cara o cruz dependiendo de tu suerte", brief="No se han especificado notas en este comando",aliases=["coinflip","volado"])
+async def coin(ctx):
+    coin1 = random.choice(["cara","cruz"])
+    if coin1 == "cara":
+        image = "https://media.discordapp.net/attachments/816087291482734613/820002905816956938/Holas_Coin.png?width=383&height=383"
+    else:
+        image = "https://media.discordapp.net/attachments/816087291482734613/820002942748327956/Holas_Coin2.png?width=383&height=383"
+    embed = discord.Embed(title="Coin", description=f"¡Salió {coin1}!",colour= discord.Colour(0xf5a623))
+    embed.set_author(name=ctx.message.author.name,icon_url=ctx.message.author.avatar_url)
+    embed.set_image(url=image)
+    await ctx.send(embed=embed)
+#########################/
+
+#Girará un dado y te dará el resultado.
+@client.command(usage="`dado`", help="Girará un dado devolviendo un valor del 1 al 6", brief="No se han especificado notas en este comando",aliases=["dice","die","dados"])
+async def dado(ctx):
+    urlist = ["https://media.discordapp.net/attachments/816087291482734613/820022423130603590/1.png?width=87&height=87", 
+    "https://media.discordapp.net/attachments/816087291482734613/820022426174750760/2.png?width=87&height=87",
+    "https://media.discordapp.net/attachments/816087291482734613/820022428175433737/3.png?width=87&height=87",
+    "https://media.discordapp.net/attachments/816087291482734613/820022430092361748/4.png?width=87&height=87",
+    "https://media.discordapp.net/attachments/816087291482734613/820022431166365757/5.png?width=87&height=87",
+    "https://media.discordapp.net/attachments/816087291482734613/820022434618015765/6.png?width=87&height=87"]
+    x = random.randint(1,6)
+    await ctx.send(embed=discord.Embed(title=f"Tu dado es {x}",colour= discord.Colour(0xf5a623)).set_image(url=urlist[x - 1]).set_author(name=ctx.message.author.name,icon_url=ctx.message.author.avatar_url))
+#########################/
 
 client.run(token)
