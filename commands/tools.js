@@ -4,8 +4,18 @@ const {Message} = require("discord.js");
  * @param {String} command
 */
 function comp(msg,command) {
-    if(msg.content.split(" ")[0]==`h!${command}` || msg.content.split(" ")[0]==`<@!${msg.client.user.id}>${command}`) return false;
-    return true;
+    if(typeof(command)=="string"){
+        if(msg.content.split(" ")[0]==`h!${command}` || msg.content.split(" ").slice(0,2).join(" ")==`<@!${msg.client.user.id}> ${command}`) return false;
+        return true;
+    }
+    else {
+        let is_command = false;
+        for(i=0;i<command.length;i++){
+            if(msg.content.split(" ")[0]==`h!${command[i]}` || msg.content.split(" ").slice(0,2).join(" ")==`<@!${msg.client.user.id}> ${command[i]}`)is_command=true;
+        }
+        if(is_command) return false;
+        else return true;
+    }
 }
 
 /** 

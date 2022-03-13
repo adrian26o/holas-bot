@@ -25,8 +25,10 @@ async function say(msg) {
             return;
         }
     }
+    let slice_start = 1;
+    if(msg.content.split(" ").slice(0,2).join(" ")==`<@!${msg.client.user.id}> say`) slice_start +=1;
 
-    msg.channel.send(msg.content.split(" ").slice(1).join(" "));
+    msg.channel.send(msg.content.split(" ").slice(slice_start).join(" "));
     if(msg.deletable) await msg.delete();
 }
 
