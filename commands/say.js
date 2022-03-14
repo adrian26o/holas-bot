@@ -16,17 +16,15 @@ async function say(msg) {
         return;
     }
 
-    const roles = [];
-    msg.guild.roles.cache.forEach((role)=>{ roles.push(role) });
+    const roles = msg.guild.roles.cache.map(role => role)
 
-    for(i=0;i<roles.length;i++) {
-        if(msg.content.includes(`<@&${roles[i].id}>`)) {
-            input_err(msg,"You can't mention a guild role");
-            return;
-        }
+    const mroles = roles.filter(role => msg.content.includes(`<@&${role.id}>`))
+    if(mroles.length > 0) {
+	    input_err(msg,"You can't mention a guild role")
+	    return;
     }
     let slice_start = 1;
-    if(msg.content.split(" ").slice(0,2).join(" ")==`<@!${msg.client.user.id}> say`) slice_start +=1;
+    if(msg.content.split(" ").slice(0,2).join(" ")==`<@!${msg.client.user.id}> say`||msg.content.split(" ").slice(0,2).join(" ")==`<@${msg.client.user.id}> say`) slice_start +=1;
 
     msg.channel.send(msg.content.split(" ").slice(slice_start).join(" "));
     if(msg.deletable) await msg.delete();

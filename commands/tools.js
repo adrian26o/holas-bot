@@ -5,7 +5,7 @@ const {Message} = require("discord.js");
 */
 function comp(msg,command) {
     if(typeof(command)=="string"){
-        if(msg.content.split(" ")[0]==`h!${command}` || msg.content.split(" ").slice(0,2).join(" ")==`<@!${msg.client.user.id}> ${command}`) return false;
+        if(msg.content.split(" ")[0]==`h!${command}` || msg.content.split(" ").slice(0,2).join(" ")==`<@!${msg.client.user.id}> ${command}` || msg.content.split(" ").slice(0,2).join(" ")==`<@${msg.client.user.id}> ${command}`) return false;
         return true;
     }
     else {
