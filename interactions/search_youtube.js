@@ -8,8 +8,7 @@ const youtube = new Scraper();
 
 async function int_syt(inte) {
     if(!inte.isButton()) return;
-    author_username = "";
-    inte.message.mentions.users.forEach(user => {author_username = user.username;});
+    author_username = inte.message.mentions.users.map(user => user.username)
 
     if(inte.user.username != author_username) return;
 
