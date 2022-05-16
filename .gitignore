@@ -1,3 +1,5 @@
+#build-state
+build/
 # Logs
 logs
 *.log

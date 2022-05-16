@@ -1,6 +1,10 @@
 {
   "dependencies": {
+    "@types/node": "^17.0.33",
     "@yimura/scraper": "^1.2.3",
     "discord.js": "^13.6.0"
+  },
+  "scripts": {
+    "dev": "tsc && node ./build/index.js"
   }
 }

@@ -1,25 +1,33 @@
-const {Message,MessageEmbed} = require("discord.js");
-const path = require("path");
-const {comp,input_err} = require(__dirname+path.posix.sep+"tools.js");
-/**
- * @param {Message} msg 
- */
-function server_info(msg) {
-    
+import {Message,MessageEmbed} from "discord.js";
+import {comp} from "./tools";
+import {Command} from "./class";
+
+function server_info(msg: Message) { 
     if(comp(msg,["svinfo","serverinfo","guild","guildinfo","svinf"])) return;
+	if(
+		msg.client.user == null ||
+		msg.guild == null
+	  ) return;
+
     const embed = new MessageEmbed({
         footer:{
             text:msg.client.user.username,
+			//@ts-ignore
             iconURL:msg.client.user.avatarURL()
         },
+			//@ts-ignore
         timestamp:Date.now(),
+			//@ts-ignore
         title:`${msg.guild.name}`,
+			//@ts-ignore
         color:[245,166,35],
         thumbnail:{
+			//@ts-ignore
             url:msg.guild.iconURL()
         }
     })
 
+	// @ts-ignore
     if(msg.guild.banner) embed.setImage(msg.guild.bannerURL());
     embed.addField("ID:",msg.guild.id,false);
     embed.addField("Created at:",`<t:${Math.round(msg.guild.createdTimestamp/1000)}>`,false);
@@ -51,4 +59,5 @@ function server_info(msg) {
     msg.reply({embeds:[embed]})
 }
 
-module.exports = server_info;
+const command = new Command("serverinfo", server_info);
+export {command}

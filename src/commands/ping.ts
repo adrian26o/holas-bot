@@ -1,10 +1,8 @@
-const {Message,MessageEmbed} = require("discord.js");
-const path = require("path");
-const {comp,input_err} = require(__dirname+path.posix.sep+"tools.js");
-/**
- * @param {Message} msg 
- */
-function ping(msg) {
+import {Message,MessageEmbed} from "discord.js";
+import {Command} from "./class"
+import {comp} from "./tools";
+
+function ping(msg:Message) {
     if(comp(msg,"ping")) return;
     const embed = new MessageEmbed({
         description:`Latency: ${Date.now() - msg.createdTimestamp}ms\nApi Latency: ${Math.round(msg.client.ws.ping)}ms`,
@@ -17,4 +15,5 @@ function ping(msg) {
     })
 }
 
-module.exports = ping;
+const command = new Command("ping",ping);
+export {command}

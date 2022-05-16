@@ -1,14 +1,13 @@
-const {Message, MessageButton, MessagePayload, MessageActionRow,Interaction} = require("discord.js");
+import {Message, MessageButton, MessagePayload, MessageActionRow,Interaction, User} from "discord.js";
+
 const Scraper = require('@yimura/scraper').default;
 const youtube = new Scraper();
 
-/**
- * @param {Interaction} inte 
- */
 
-async function int_syt(inte) {
+async function int_syt(inte:Interaction) {
     if(!inte.isButton()) return;
-    author_username = inte.message.mentions.users.map(user => user.username)
+	// @ts-ignore
+    let author_username = inte.message.mentions.users.map((user:User) => user.username)
 
     if(inte.user.username != author_username) return;
 
@@ -31,6 +30,7 @@ async function int_syt(inte) {
             )
         }
 
+		// @ts-ignore
         await inte.message.edit({
             content:`Search for:\n[${index+1}] ${search}\n${videos[index+1].link}`,
             components:[row1]
@@ -57,6 +57,7 @@ async function int_syt(inte) {
             )
         }
 
+		// @ts-ignore
         await inte.message.edit({
             content:`Search for:\n[${index-1}] ${search}\n${videos[index-1].link}`,
             components:[row1]
@@ -65,4 +66,4 @@ async function int_syt(inte) {
     }
 }
 
-module.exports = int_syt
+export {int_syt}

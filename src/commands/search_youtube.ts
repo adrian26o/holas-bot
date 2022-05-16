@@ -1,14 +1,13 @@
-const {Message, MessageButton, MessagePayload, MessageActionRow} = require("discord.js");
-const path = require("path");
-const {comp,input_err} = require(__dirname+path.posix.sep+"tools.js");
+import {Message, MessageButton, MessageActionRow} from "discord.js";
+import {comp,input_err} from "./tools";
+import {Command} from "./class";
+
 const Scraper = require('@yimura/scraper').default;
 const youtube = new Scraper();
 
-/**
- * @param {Message} msg 
- */
-async function syt(msg) {
+async function syt(msg:Message) {
     if(comp(msg,"syt")) return;
+
     if(msg.content.split(" ").slice(1).join(" ").trim().length==0) {
         input_err(msg,"Search input is empty");
         return;
@@ -22,4 +21,5 @@ async function syt(msg) {
     
 }
 
-module.exports = syt;
+const command = new Command("syt",syt)
+export {command}
