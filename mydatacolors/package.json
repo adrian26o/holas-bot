@@ -1,0 +1,25 @@
+{
+  "name": "mydatacolors",
+  "displayName": "myDataColors",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "mydata",
+      "aliases": ["mydatacolors", "mydata"],
+      "extensions": [".zd"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "mydata",
+      "scopeName": "source.zd",
+      "path": "./syntaxes/mydata.tmLanguage.json"
+    }]
+  }
+}
