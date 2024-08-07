@@ -1,0 +1,44 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "mydatacolors",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.mydata",
+				"match": "\\b(if|while|for|return)\\b"
+			},
+			{
+				"name": "comment.line.number-sign",
+				"begin": "#",
+				"end": "\n"			
+			},
+			{
+				"name": "string.quoted",
+				"begin": "!",
+				"end": "\n",
+				"patterns": [
+				]
+			},
+			{
+				"name": "variable",
+				"begin": "\\b(a)\\b",
+				"beginCaptures": {
+					"0": {
+						"name": "variable"
+					}
+				},
+				"end":"\n"
+			}
+		]
+		}
+	},
+	"scopeName": "source.zd"
+}
