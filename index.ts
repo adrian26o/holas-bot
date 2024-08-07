@@ -1,5 +1,5 @@
 import { Client, ClientOptions, InteractionType, Routes, REST, GatewayIntentBits} from "discord.js";
-import * as config from "./config.json";
+// import * as config from "./config.json";
 import { commands } from "./commands/init";
 import { sendMessage } from "./commands/tools/cumples/tools"
 const clientOptions: ClientOptions = {
@@ -24,4 +24,4 @@ client.once("ready", ()=> {
 	setInterval(() => {sendMessage(client)}, 2147483647)
 })
 
-client.login(process.env.BOT_TOKEN || config.token);
+client.login(process.env.BOT_TOKEN);

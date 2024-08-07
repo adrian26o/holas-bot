@@ -6,7 +6,8 @@
   "scripts": {
     "test": "npx nodemon index.ts",
     "testDeploy": "npx ts-node deploy-commands.ts --test",
-    "globalDeploy": "npx ts-node deploy-commands.ts"
+    "globalDeploy": "npx ts-node deploy-commands.ts",
+    "build": "npx tsc"
   },
   "author": "",
   "license": "ISC",
