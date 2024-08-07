@@ -24,4 +24,4 @@ client.once("ready", ()=> {
 	setInterval(() => {sendMessage(client)}, 2147483647)
 })
 
-client.login(config.token);
+client.login(process.env.BOT_TOKEN || config.token);
