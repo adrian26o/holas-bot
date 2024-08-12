@@ -1,33 +1,31 @@
-import {REST, Routes} from "discord.js"
-// import * as config from "./config.json"
+import { REST, Routes } from "discord.js"
 import { commands } from "./commands/init";
+import { RESTGetCurrentApplicationResult } from "discord-api-types/v10";
 
-const rest = new REST().setToken(process.env.BOT_TOKEN || "");
+if(process.env.BOT_TOKEN == null) throw new TypeError("BOT_TOKEN cannot be null");
 
+const serializedCommands = commands.map(v => v.data.toJSON());
+const rest = new REST().setToken(process.env.BOT_TOKEN);
 
-/*
-commands.forEach(v => {
-	try {
-		console.log(v.data.toJSON())
+rest.get(Routes.currentApplication()).then((value: unknown) => {
+	const application = value as RESTGetCurrentApplicationResult;
+	
+	const index = process.argv.findIndex(argument => argument === "--guild") + 1;
+	const argument = index != 0 ? process.argv.at(index) : null;
+	
+	if(argument != null) {
+		rest.put(Routes.applicationGuildCommands(application.id, argument), {
+			body: serializedCommands
+		});
+		return;
 	}
-	catch (no) {
-		console.log(no)
+	else if(index != 0) {
+		throw new Error("--guild must be followed by the guild ID.");
 	}
-}
-)
-*/
 
-const commandDataList = commands.map(v => v.data.toJSON());
-const guildID = "796962500373250069" // Server ID of tests
-const userID = "796797535208341544" // Bot  ID
-
-const args = process.argv.slice(2);
-if(args.some(v => v === "--test")) {
-	rest.put(Routes.applicationGuildCommands("", ""), {
-		body: commandDataList
+	rest.put(Routes.applicationCommands(application.id), {
+		body: serializedCommands
 	});
-} else {
-	rest.put(Routes.applicationCommands(""), {
-		body: commandDataList
-	})
-}
+}).catch( reason => {
+	throw new Error("BOT_TOKEN must be a valid token");
+});
