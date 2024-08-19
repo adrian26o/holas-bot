@@ -11,11 +11,8 @@ const client = new Client(clientOptions);
 client.on("interactionCreate", async (interact)=>{
 	if(!interact.isChatInputCommand()) return;
 
-	const command = commands.filter(v => v.data.name === interact.commandName);
-
-	if(command.length <= 0) return;
-
-	await command[0].execute(interact);
+	const command = commands.find(command => command.data.name === interact.commandName);
+	await command?.execute(interact);
 });
 
 client.once("ready", ()=> {
